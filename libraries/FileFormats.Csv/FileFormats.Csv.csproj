@@ -6,11 +6,11 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RootNamespace>KustoLoco.FileFormats</RootNamespace>
-    <PackageId>KustoLoco.FileFormats</PackageId>
-    <Title>KustoLoco.FileFormats</Title>
+    <PackageId>KustoLoco.FileFormats.Csv</PackageId>
+    <Title>KustoLoco.FileFormats.Csv</Title>
     <Version>1.0.0</Version>
     <Authors>Neil MacMullen</Authors>
-    <Description>Metapackage for KQL querying of common file-formats (includes Parquet, CSV, Excel, and JSON support)</Description>
+    <Description>CSV/TSV file format support for KustoLoco</Description>
     <Copyright>(C) 2024</Copyright>
     <PackageProjectUrl>https://github.com/NeilMacMullen/kusto-loco</PackageProjectUrl>
     <RepositoryUrl>https://github.com/NeilMacMullen/kusto-loco</RepositoryUrl>
@@ -18,7 +18,7 @@
     <PackageReleaseNotes>https://github.com/NeilMacMullen/kusto-loco/releases</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <IncludeSymbols>True</IncludeSymbols>
-    <AssemblyName>KustoLoco.FileFormats</AssemblyName>
+    <AssemblyName>KustoLoco.FileFormats.Csv</AssemblyName>
     <Configurations>Debug;Release;AvaloniaPreviewer;DebugStartup</Configurations>
   </PropertyGroup>
 
@@ -34,11 +34,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" />
+    <PackageReference Include="NotNullStrings" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\FileFormats.Abstractions\FileFormats.Abstractions.csproj" />
-    <ProjectReference Include="..\FileFormats.Parquet\FileFormats.Parquet.csproj" />
-    <ProjectReference Include="..\FileFormats.Csv\FileFormats.Csv.csproj" />
-    <ProjectReference Include="..\FileFormats.Excel\FileFormats.Excel.csproj" />
-    <ProjectReference Include="..\FileFormats.Json\FileFormats.Json.csproj" />
   </ItemGroup>
 
 </Project>
