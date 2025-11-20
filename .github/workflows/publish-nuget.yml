@@ -1,0 +1,93 @@
+name: Publish NuGet Packages
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Package version (e.g., 1.0.0)'
+        required: true
+        type: string
+      publish:
+        description: 'Publish to NuGet.org'
+        required: true
+        type: boolean
+        default: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+          
+      - name: Restore
+        run: dotnet restore
+        
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+        
+      - name: Test
+        run: dotnet test --no-build --configuration Release
+        
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" == "release" ]; then
+            VERSION="${{ github.event.release.tag_name }}"
+            VERSION="${VERSION#v}"  # Remove 'v' prefix if present
+          else
+            VERSION="${{ github.event.inputs.version }}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          
+      - name: Pack NuGet packages
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          
+          # Pack all libraries
+          dotnet pack -p:PackageVersion=$VERSION libraries/KustoLoco.Core/KustoLoco.Core.csproj --configuration Release --no-build
+          dotnet pack -p:PackageVersion=$VERSION libraries/FileFormats.Abstractions/FileFormats.Abstractions.csproj --configuration Release --no-build
+          dotnet pack -p:PackageVersion=$VERSION libraries/FileFormats.Parquet/FileFormats.Parquet.csproj --configuration Release --no-build
+          dotnet pack -p:PackageVersion=$VERSION libraries/FileFormats.Csv/FileFormats.Csv.csproj --configuration Release --no-build
+          dotnet pack -p:PackageVersion=$VERSION libraries/FileFormats.Excel/FileFormats.Excel.csproj --configuration Release --no-build
+          dotnet pack -p:PackageVersion=$VERSION libraries/FileFormats.Json/FileFormats.Json.csproj --configuration Release --no-build
+          dotnet pack -p:PackageVersion=$VERSION libraries/FileFormats/FileFormats.csproj --configuration Release --no-build
+          dotnet pack -p:PackageVersion=$VERSION libraries/Rendering/Rendering.csproj --configuration Release --no-build
+          dotnet pack -p:PackageVersion=$VERSION libraries/ScottPlotRendering/ScottPlotRendering.csproj --configuration Release --no-build
+          dotnet pack -p:PackageVersion=$VERSION libraries/SixelSupport/SixelSupport.csproj --configuration Release --no-build
+          dotnet pack -p:PackageVersion=$VERSION libraries/PluginSupport/PluginSupport.csproj --configuration Release --no-build
+          dotnet pack -p:PackageVersion=$VERSION sourceGeneration/SourceGenDependencies/SourceGenDependencies.csproj --configuration Release --no-build
+          
+      - name: List packages
+        run: find . -name '*.nupkg' -not -name '*.symbols.nupkg'
+        
+      - name: Upload packages as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: |
+            **/*.nupkg
+            **/*.snupkg
+          retention-days: 7
+          
+      - name: Publish to NuGet.org
+        if: (github.event_name == 'release') || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish == 'true')
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          if [ -z "$NUGET_API_KEY" ]; then
+            echo "::warning::NUGET_API_KEY secret is not set. Skipping NuGet publish."
+            exit 0
+          fi
+          
+          # Publish all main packages (excluding symbols packages)
+          for pkg in $(find . -name '*.nupkg' -not -name '*.symbols.nupkg'); do
+            echo "Publishing $pkg"
+            dotnet nuget push "$pkg" --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
+          done
