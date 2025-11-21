@@ -1,5 +1,8 @@
 // Licensed under the MIT License.
 
+using System.Linq;
+using KustoLoco.Core;
+
 namespace KustoLoco.Linq;
 
 /// <summary>
