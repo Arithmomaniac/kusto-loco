@@ -20,6 +20,11 @@ param(
 $versionString = $version.replace('.', '-')
 $uploadsFolder = "uploads-$versionstring"
 $packages = @( ("KustoLoco.Core", "KustoLoco.Core"), 
+    ("FileFormats.Abstractions", "KustoLoco.FileFormats.Abstractions"),
+    ("FileFormats.Parquet", "KustoLoco.FileFormats.Parquet"),
+    ("FileFormats.Csv", "KustoLoco.FileFormats.Csv"),
+    ("FileFormats.Excel", "KustoLoco.FileFormats.Excel"),
+    ("FileFormats.Json", "KustoLoco.FileFormats.Json"),
     ("FileFormats", "KustoLoco.FileFormats"),
     ("Rendering", "KustoLoco.Rendering"),
     ("ScottPlotRendering", "KustoLoco.Rendering.ScottPlot"), 
