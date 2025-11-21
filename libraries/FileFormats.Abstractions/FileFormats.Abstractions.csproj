@@ -6,11 +6,11 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RootNamespace>KustoLoco.FileFormats</RootNamespace>
-    <PackageId>KustoLoco.FileFormats.Json</PackageId>
-    <Title>KustoLoco.FileFormats.Json</Title>
+    <PackageId>KustoLoco.FileFormats.Abstractions</PackageId>
+    <Title>KustoLoco.FileFormats.Abstractions</Title>
     <Version>1.0.0</Version>
     <Authors>Neil MacMullen</Authors>
-    <Description>JSON file format support for KustoLoco</Description>
+    <Description>Shared interfaces and types for KustoLoco file format support</Description>
     <Copyright>(C) 2024</Copyright>
     <PackageProjectUrl>https://github.com/NeilMacMullen/kusto-loco</PackageProjectUrl>
     <RepositoryUrl>https://github.com/NeilMacMullen/kusto-loco</RepositoryUrl>
@@ -18,7 +18,7 @@
     <PackageReleaseNotes>https://github.com/NeilMacMullen/kusto-loco/releases</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <IncludeSymbols>True</IncludeSymbols>
-    <AssemblyName>KustoLoco.FileFormats.Json</AssemblyName>
+    <AssemblyName>KustoLoco.FileFormats.Abstractions</AssemblyName>
     <Configurations>Debug;Release;AvaloniaPreviewer;DebugStartup</Configurations>
   </PropertyGroup>
 
@@ -34,11 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NotNullStrings" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\FileFormats.Abstractions\FileFormats.Abstractions.csproj" />
+    <ProjectReference Include="..\KustoLoco.Core\KustoLoco.Core.csproj" />
   </ItemGroup>
 
 </Project>

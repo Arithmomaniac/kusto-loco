@@ -40,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KustoLoco.Core\KustoLoco.Core.csproj" />
+    <ProjectReference Include="..\FileFormats.Abstractions\FileFormats.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

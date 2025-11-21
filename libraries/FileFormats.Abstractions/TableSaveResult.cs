@@ -1,4 +1,4 @@
-﻿namespace KustoLoco.Core;
+﻿namespace KustoLoco.FileFormats;
 
 public readonly record struct TableSaveResult(string Error)
 {

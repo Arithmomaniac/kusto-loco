@@ -1,7 +1,8 @@
-﻿using System.IO;
-using System.Threading.Tasks;
+﻿
 
-namespace KustoLoco.Core;
+using KustoLoco.Core;
+
+namespace KustoLoco.FileFormats;
 
 /// <summary>
 /// Describes an object that can Serialize a table from a file or other source
