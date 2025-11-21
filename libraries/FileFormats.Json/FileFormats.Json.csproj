@@ -38,7 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FileFormats\FileFormats.csproj" />
+    <ProjectReference Include="..\KustoLoco.Core\KustoLoco.Core.csproj" />
   </ItemGroup>
 
 </Project>

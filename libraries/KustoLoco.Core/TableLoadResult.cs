@@ -1,7 +1,7 @@
 ﻿using KustoLoco.Core;
 using KustoLoco.Core.DataSource;
 
-namespace KustoLoco.FileFormats;
+namespace KustoLoco.Core;
 
 /// <summary>
 /// Represents the result of a table load operation - Table will be TableSource.Empty if the load failed
