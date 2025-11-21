@@ -8,7 +8,7 @@
     <RootNamespace>KustoLoco.FileFormats</RootNamespace>
     <PackageId>KustoLoco.FileFormats</PackageId>
     <Title>KustoLoco.FileFormats</Title>
-    <Version>1.0.0</Version>
+    <Version>2.0.0</Version>
     <Authors>Neil MacMullen</Authors>
     <Description>Metapackage for KQL querying of common file-formats (includes Parquet, CSV, Excel, and JSON support)</Description>
     <Copyright>(C) 2024</Copyright>
