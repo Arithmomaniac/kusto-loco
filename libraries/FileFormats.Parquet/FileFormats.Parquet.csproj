@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FileFormats.Abstractions\FileFormats.Abstractions.csproj" />
+    <ProjectReference Include="..\FileFormats\FileFormats.csproj" />
   </ItemGroup>
 
 </Project>

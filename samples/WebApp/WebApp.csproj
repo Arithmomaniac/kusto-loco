@@ -14,6 +14,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\FileFormats\FileFormats.csproj" />
+    <ProjectReference Include="..\..\libraries\FileFormats.Parquet\FileFormats.Parquet.csproj" />
+    <ProjectReference Include="..\..\libraries\FileFormats.Csv\FileFormats.Csv.csproj" />
+    <ProjectReference Include="..\..\libraries\FileFormats.Excel\FileFormats.Excel.csproj" />
+    <ProjectReference Include="..\..\libraries\FileFormats.Json\FileFormats.Json.csproj" />
     <ProjectReference Include="..\..\libraries\KustoLoco.Core\KustoLoco.Core.csproj" />
   </ItemGroup>
 
