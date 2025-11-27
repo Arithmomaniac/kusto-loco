@@ -115,6 +115,7 @@ internal static class BuiltInAggregates
         MaxIfAggregate.Register(Aggregates);
 
         TakeAny.Register(Aggregates);
+        TakeAnyIf.Register(Aggregates);
 
         Aggregates.Add(
             Kusto.Language.Aggregates.Percentile,
