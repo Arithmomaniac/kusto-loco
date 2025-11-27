@@ -204,4 +204,118 @@ public class ArgMinMaxTests : TestMethods
         var result = await LastLineOfResult(query);
         result.Should().Be("2,1");
     }
+
+    /// <summary>
+    /// Based on Microsoft Documentation example:
+    /// Find the row with the highest Version for each Fruit, returning all columns
+    /// https://learn.microsoft.com/en-us/kusto/query/arg-max-aggregation-function
+    /// </summary>
+    [TestMethod]
+    public async Task ArgMaxStarByFruit_FromDocumentation()
+    {
+        var query = """
+                    datatable(Fruit: string, Color: string, Version: int) [
+                        "Apple", "Red", 1,
+                        "Apple", "Green", int(null),
+                        "Banana", "Yellow", int(null),
+                        "Banana", "Green", int(null),
+                        "Pear", "Brown", 1,
+                        "Pear", "Green", 2,
+                    ]
+                    | summarize arg_max(Version, *) by Fruit
+                    | order by Fruit asc
+                    """;
+
+        var result = await ResultAsLines(query);
+        // Apple: Version 1 is max (null is ignored), returns Red
+        // Banana: both null, arbitrary row picked (either Yellow or Green)
+        // Pear: Version 2 is max, returns Green
+        result.Should().Contain("Apple,1,Red");
+        result.Should().Contain("Pear,2,Green");
+    }
+
+    /// <summary>
+    /// Based on Microsoft Documentation example:
+    /// Find the row with the lowest Version for each Fruit, returning all columns
+    /// https://learn.microsoft.com/en-us/kusto/query/arg-min-aggregation-function
+    /// </summary>
+    [TestMethod]
+    public async Task ArgMinStarByFruit_FromDocumentation()
+    {
+        var query = """
+                    datatable(Fruit: string, Color: string, Version: int) [
+                        "Apple", "Red", 1,
+                        "Apple", "Green", int(null),
+                        "Banana", "Yellow", int(null),
+                        "Banana", "Green", int(null),
+                        "Pear", "Brown", 1,
+                        "Pear", "Green", 2,
+                    ]
+                    | summarize arg_min(Version, *) by Fruit
+                    | order by Fruit asc
+                    """;
+
+        var result = await ResultAsLines(query);
+        // Apple: Version 1 is min (null is ignored), returns Red
+        // Banana: both null, arbitrary row picked
+        // Pear: Version 1 is min, returns Brown
+        result.Should().Contain("Apple,1,Red");
+        result.Should().Contain("Pear,1,Brown");
+    }
+
+    /// <summary>
+    /// Based on Microsoft Documentation example:
+    /// arg_min with multiple return columns
+    /// https://learn.microsoft.com/en-us/kusto/query/arg-min-aggregation-function
+    /// </summary>
+    [TestMethod]
+    public async Task ArgMinMultipleReturnColumns_FromDocumentation()
+    {
+        var query = """
+                    datatable(State: string, BeginLat: real, BeginLocation: string, EventType: string) [
+                        "ALABAMA", 30.5, "Location1", "Tornado",
+                        "ALABAMA", 31.2, "Location2", "Hail",
+                        "FLORIDA", 25.1, "Location3", "Storm",
+                        "FLORIDA", 26.3, "Location4", "Wind",
+                    ]
+                    | summarize arg_min(BeginLat, BeginLocation, EventType) by State
+                    | order by State asc
+                    """;
+
+        var result = await ResultAsLines(query);
+        // For ALABAMA: min BeginLat is 30.5, so returns Location1, Tornado
+        // For FLORIDA: min BeginLat is 25.1, so returns Location3, Storm
+        result.Should().Be("""
+                           ALABAMA,30.5,Location1,Tornado
+                           FLORIDA,25.1,Location3,Storm
+                           """);
+    }
+
+    /// <summary>
+    /// Based on Microsoft Documentation example:
+    /// arg_max with multiple return columns
+    /// https://learn.microsoft.com/en-us/kusto/query/arg-max-aggregation-function
+    /// </summary>
+    [TestMethod]
+    public async Task ArgMaxMultipleReturnColumns_FromDocumentation()
+    {
+        var query = """
+                    datatable(State: string, BeginLat: real, BeginLocation: string, EventType: string) [
+                        "ALABAMA", 30.5, "Location1", "Tornado",
+                        "ALABAMA", 31.2, "Location2", "Hail",
+                        "FLORIDA", 25.1, "Location3", "Storm",
+                        "FLORIDA", 26.3, "Location4", "Wind",
+                    ]
+                    | summarize arg_max(BeginLat, BeginLocation) by State
+                    | order by State asc
+                    """;
+
+        var result = await ResultAsLines(query);
+        // For ALABAMA: max BeginLat is 31.2, so returns Location2
+        // For FLORIDA: max BeginLat is 26.3, so returns Location4
+        result.Should().Be("""
+                           ALABAMA,31.2,Location2
+                           FLORIDA,26.3,Location4
+                           """);
+    }
 }
