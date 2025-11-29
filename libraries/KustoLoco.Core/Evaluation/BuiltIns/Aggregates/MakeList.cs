@@ -2,10 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text.Json.Nodes;
-using Kusto.Language.Symbols;
 using KustoLoco.Core.DataSource;
 using KustoLoco.Core.DataSource.Columns;
 
@@ -17,34 +14,8 @@ internal class MakeListIntFunctionImpl : IAggregateImpl
     {
         MyDebug.Assert(arguments.Length == 1 || arguments.Length == 2);
         var valuesColumn = (GenericTypedBaseColumnOfint)arguments[0].Column;
-
-        var maxSize = long.MaxValue;
-        if (arguments.Length == 2)
-        {
-            var maxSizeColumn = (GenericTypedBaseColumnOflong)arguments[1].Column;
-            MyDebug.Assert(valuesColumn.RowCount == maxSizeColumn.RowCount);
-
-            if (maxSizeColumn.RowCount > 0)
-            {
-                maxSize = maxSizeColumn[0] ?? long.MaxValue;
-            }
-        }
-
-        var list = new List<int>();
-        for (var i = 0; i < valuesColumn.RowCount; i++)
-        {
-            var v = valuesColumn[i];
-            if (v.HasValue)
-            {
-                list.Add(v.Value);
-                if (list.Count >= maxSize)
-                {
-                    break;
-                }
-            }
-        }
-
-        return new ScalarResult(ScalarTypes.Dynamic, JsonArrayHelper.From(list));
+        var maxSize = MakeCollectionHelper.GetMaxSize(arguments, 1);
+        return MakeCollectionHelper.MakeList(valuesColumn.RowCount, i => valuesColumn[i], maxSize);
     }
 }
 
@@ -54,34 +25,8 @@ internal class MakeListLongFunctionImpl : IAggregateImpl
     {
         MyDebug.Assert(arguments.Length == 1 || arguments.Length == 2);
         var valuesColumn = (GenericTypedBaseColumnOflong)arguments[0].Column;
-
-        var maxSize = long.MaxValue;
-        if (arguments.Length == 2)
-        {
-            var maxSizeColumn = (GenericTypedBaseColumnOflong)arguments[1].Column;
-            MyDebug.Assert(valuesColumn.RowCount == maxSizeColumn.RowCount);
-
-            if (maxSizeColumn.RowCount > 0)
-            {
-                maxSize = maxSizeColumn[0] ?? long.MaxValue;
-            }
-        }
-
-        var list = new List<long>();
-        for (var i = 0; i < valuesColumn.RowCount; i++)
-        {
-            var v = valuesColumn[i];
-            if (v.HasValue)
-            {
-                list.Add(v.Value);
-                if (list.Count >= maxSize)
-                {
-                    break;
-                }
-            }
-        }
-
-        return new ScalarResult(ScalarTypes.Dynamic, JsonArrayHelper.From(list));
+        var maxSize = MakeCollectionHelper.GetMaxSize(arguments, 1);
+        return MakeCollectionHelper.MakeList(valuesColumn.RowCount, i => valuesColumn[i], maxSize);
     }
 }
 
@@ -91,37 +36,10 @@ internal class MakeListDoubleFunctionImpl : IAggregateImpl
     {
         MyDebug.Assert(arguments.Length == 1 || arguments.Length == 2);
         var valuesColumn = (GenericTypedBaseColumnOfdouble)arguments[0].Column;
-
-        var maxSize = long.MaxValue;
-        if (arguments.Length == 2)
-        {
-            var maxSizeColumn = (GenericTypedBaseColumnOflong)arguments[1].Column;
-            MyDebug.Assert(valuesColumn.RowCount == maxSizeColumn.RowCount);
-
-            if (maxSizeColumn.RowCount > 0)
-            {
-                maxSize = maxSizeColumn[0] ?? long.MaxValue;
-            }
-        }
-
-        var list = new List<double>();
-        for (var i = 0; i < valuesColumn.RowCount; i++)
-        {
-            var v = valuesColumn[i];
-            if (v.HasValue)
-            {
-                list.Add(v.Value);
-                if (list.Count >= maxSize)
-                {
-                    break;
-                }
-            }
-        }
-
-        return new ScalarResult(ScalarTypes.Dynamic, JsonArrayHelper.From(list));
+        var maxSize = MakeCollectionHelper.GetMaxSize(arguments, 1);
+        return MakeCollectionHelper.MakeList(valuesColumn.RowCount, i => valuesColumn[i], maxSize);
     }
 }
-
 
 internal class MakeListDecimalFunctionImpl : IAggregateImpl
 {
@@ -129,34 +47,8 @@ internal class MakeListDecimalFunctionImpl : IAggregateImpl
     {
         MyDebug.Assert(arguments.Length == 1 || arguments.Length == 2);
         var valuesColumn = (GenericTypedBaseColumnOfdecimal)arguments[0].Column;
-
-        var maxSize = decimal.MaxValue;
-        if (arguments.Length == 2)
-        {
-            var maxSizeColumn = (GenericTypedBaseColumnOfdecimal)arguments[1].Column;
-            MyDebug.Assert(valuesColumn.RowCount == maxSizeColumn.RowCount);
-
-            if (maxSizeColumn.RowCount > 0)
-            {
-                maxSize = maxSizeColumn[0] ?? decimal.MaxValue;
-            }
-        }
-
-        var list = new List<decimal>();
-        for (var i = 0; i < valuesColumn.RowCount; i++)
-        {
-            var v = valuesColumn[i];
-            if (v.HasValue)
-            {
-                list.Add(v.Value);
-                if (list.Count >= maxSize)
-                {
-                    break;
-                }
-            }
-        }
-
-        return new ScalarResult(ScalarTypes.Dynamic, JsonArrayHelper.From(list));
+        var maxSize = MakeCollectionHelper.GetMaxSize(arguments, 1);
+        return MakeCollectionHelper.MakeList(valuesColumn.RowCount, i => valuesColumn[i], maxSize);
     }
 }
 
@@ -166,34 +58,8 @@ internal class MakeListTimeSpanFunctionImpl : IAggregateImpl
     {
         MyDebug.Assert(arguments.Length == 1 || arguments.Length == 2);
         var valuesColumn = (GenericTypedBaseColumnOfTimeSpan)arguments[0].Column;
-
-        var maxSize = long.MaxValue;
-        if (arguments.Length == 2)
-        {
-            var maxSizeColumn = (GenericTypedBaseColumnOflong)arguments[1].Column;
-            MyDebug.Assert(valuesColumn.RowCount == maxSizeColumn.RowCount);
-
-            if (maxSizeColumn.RowCount > 0)
-            {
-                maxSize = maxSizeColumn[0] ?? long.MaxValue;
-            }
-        }
-
-        var list = new List<TimeSpan>();
-        for (var i = 0; i < valuesColumn.RowCount; i++)
-        {
-            var v = valuesColumn[i];
-            if (v.HasValue)
-            {
-                list.Add(v.Value);
-                if (list.Count >= maxSize)
-                {
-                    break;
-                }
-            }
-        }
-
-        return new ScalarResult(ScalarTypes.Dynamic, JsonArrayHelper.From(list));
+        var maxSize = MakeCollectionHelper.GetMaxSize(arguments, 1);
+        return MakeCollectionHelper.MakeList(valuesColumn.RowCount, i => valuesColumn[i], maxSize);
     }
 }
 
@@ -203,34 +69,8 @@ internal class MakeListDateTimeFunctionImpl : IAggregateImpl
     {
         MyDebug.Assert(arguments.Length == 1 || arguments.Length == 2);
         var valuesColumn = (GenericTypedBaseColumnOfDateTime)arguments[0].Column;
-
-        var maxSize = long.MaxValue;
-        if (arguments.Length == 2)
-        {
-            var maxSizeColumn = (GenericTypedBaseColumnOflong)arguments[1].Column;
-            MyDebug.Assert(valuesColumn.RowCount == maxSizeColumn.RowCount);
-
-            if (maxSizeColumn.RowCount > 0)
-            {
-                maxSize = maxSizeColumn[0] ?? long.MaxValue;
-            }
-        }
-
-        var list = new List<DateTime>();
-        for (var i = 0; i < valuesColumn.RowCount; i++)
-        {
-            var v = valuesColumn[i];
-            if (v.HasValue)
-            {
-                list.Add(v.Value);
-                if (list.Count >= maxSize)
-                {
-                    break;
-                }
-            }
-        }
-
-        return new ScalarResult(ScalarTypes.Dynamic, JsonArrayHelper.From(list));
+        var maxSize = MakeCollectionHelper.GetMaxSize(arguments, 1);
+        return MakeCollectionHelper.MakeList(valuesColumn.RowCount, i => valuesColumn[i], maxSize);
     }
 }
 
@@ -240,34 +80,8 @@ internal class MakeListStringFunctionImpl : IAggregateImpl
     {
         MyDebug.Assert(arguments.Length == 1 || arguments.Length == 2);
         var valuesColumn = (GenericTypedBaseColumnOfstring)arguments[0].Column;
-
-        var maxSize = long.MaxValue;
-        if (arguments.Length == 2)
-        {
-            var maxSizeColumn = (GenericTypedBaseColumnOflong)arguments[1].Column;
-            MyDebug.Assert(valuesColumn.RowCount == maxSizeColumn.RowCount);
-
-            if (maxSizeColumn.RowCount > 0)
-            {
-                maxSize = maxSizeColumn[0] ?? long.MaxValue;
-            }
-        }
-
-        var list = new List<string>();
-        for (var i = 0; i < valuesColumn.RowCount; i++)
-        {
-            var v = valuesColumn[i];
-            if (!string.IsNullOrEmpty(v))
-            {
-                list.Add(v);
-                if (list.Count >= maxSize)
-                {
-                    break;
-                }
-            }
-        }
-
-        return new ScalarResult(ScalarTypes.Dynamic, JsonArrayHelper.From(list));
+        var maxSize = MakeCollectionHelper.GetMaxSize(arguments, 1);
+        return MakeCollectionHelper.MakeListString(valuesColumn, maxSize);
     }
 }
 
@@ -277,31 +91,7 @@ internal class MakeListDynamicFunctionImpl : IAggregateImpl
     {
         MyDebug.Assert(arguments.Length == 1 || arguments.Length == 2);
         var valuesColumn = (GenericTypedBaseColumnOfJsonNode)arguments[0].Column;
-
-        var maxSize = long.MaxValue;
-        if (arguments.Length == 2)
-        {
-            var maxSizeColumn = (GenericTypedBaseColumnOflong)arguments[1].Column;
-            MyDebug.Assert(valuesColumn.RowCount == maxSizeColumn.RowCount);
-
-            if (maxSizeColumn.RowCount > 0)
-            {
-                maxSize = maxSizeColumn[0] ?? long.MaxValue;
-            }
-        }
-
-        var list = new List<JsonNode?>();
-        for (var i = 0; i < valuesColumn.RowCount; i++)
-        {
-            var v = valuesColumn[i];
-            if (v == null) continue;
-            list.Add(v);
-            if (list.Count >= maxSize)
-            {
-                break;
-            }
-        }
-
-        return new ScalarResult(ScalarTypes.Dynamic, JsonArrayHelper.From(list));
+        var maxSize = MakeCollectionHelper.GetMaxSize(arguments, 1);
+        return MakeCollectionHelper.MakeListDynamic(valuesColumn, maxSize);
     }
 }
