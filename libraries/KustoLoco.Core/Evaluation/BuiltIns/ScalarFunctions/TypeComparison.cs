@@ -1,70 +1,183 @@
-//
-// Licensed under the MIT License.
+
+
 
 using System;
 using System.Runtime.CompilerServices;
-using KustoLoco.Core.Evaluation.BuiltIns.Impl;
 
 namespace KustoLoco.Core.Evaluation.BuiltIns.Impl;
 
-/// <summary>
-///     This file was originally auto-generated but has been refactored
-///     to use generic comparison helpers for types that implement IComparisonOperators.
-///     DateTime and TimeSpan don't implement IComparisonOperators so they keep explicit implementations.
-/// </summary>
+
+/*
+   WARNING 
+   -------
+   This file was auto-generated.
+   Do not modify by hand - your changes will be lost .
+    
+
+   Built:  05:33:20 PM on Tuesday, 29 Jul 2025
+   Machine: BEAST
+   User:  User
+
+*/ 
+ 
+
 public static class TypeComparison
 {
-    // Numeric types delegate to ComparisonHelper generic methods
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int? MaxOfInt(int? a, int? b) => ComparisonHelper.Max(a, b);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int? MinOfInt(int? a, int? b) => ComparisonHelper.Min(a, b);
+    public static int? MaxOfInt(int? a, int? b)
+    {
+        if (b is not { } bValue) return a;
+
+        return a == null
+            ? b
+            : a.Value > b.Value
+                ? a
+                : b;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static long? MaxOfLong(long? a, long? b) => ComparisonHelper.Max(a, b);
+    public static int? MinOfInt(int? a, int? b)
+    {
+        if (b is not { } bValue) return a;
+
+        return a == null
+            ? b
+            : a.Value < b.Value
+                ? a
+                : b;
+    }
+
+
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static long? MinOfLong(long? a, long? b) => ComparisonHelper.Min(a, b);
+    public static long? MaxOfLong(long? a, long? b)
+    {
+        if (b is not { } bValue) return a;
+
+        return a == null
+            ? b
+            : a.Value > b.Value
+                ? a
+                : b;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static decimal? MaxOfDecimal(decimal? a, decimal? b) => ComparisonHelper.Max(a, b);
+    public static long? MinOfLong(long? a, long? b)
+    {
+        if (b is not { } bValue) return a;
+
+        return a == null
+            ? b
+            : a.Value < b.Value
+                ? a
+                : b;
+    }
+
+
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static decimal? MinOfDecimal(decimal? a, decimal? b) => ComparisonHelper.Min(a, b);
+    public static decimal? MaxOfDecimal(decimal? a, decimal? b)
+    {
+        if (b is not { } bValue) return a;
+
+        return a == null
+            ? b
+            : a.Value > b.Value
+                ? a
+                : b;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static double? MaxOfDouble(double? a, double? b) => ComparisonHelper.Max(a, b);
+    public static decimal? MinOfDecimal(decimal? a, decimal? b)
+    {
+        if (b is not { } bValue) return a;
+
+        return a == null
+            ? b
+            : a.Value < b.Value
+                ? a
+                : b;
+    }
+
+
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static double? MinOfDouble(double? a, double? b) => ComparisonHelper.Min(a, b);
+    public static double? MaxOfDouble(double? a, double? b)
+    {
+        if (b is not { } bValue) return a;
 
-    // DateTime and TimeSpan don't implement IComparisonOperators, so they keep explicit implementations
+        return a == null
+            ? b
+            : a.Value > b.Value
+                ? a
+                : b;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double? MinOfDouble(double? a, double? b)
+    {
+        if (b is not { } bValue) return a;
+
+        return a == null
+            ? b
+            : a.Value < b.Value
+                ? a
+                : b;
+    }
+
+
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static DateTime? MaxOfDateTime(DateTime? a, DateTime? b)
     {
         if (b is not { } bValue) return a;
-        return a == null ? b : a.Value > bValue ? a : b;
+
+        return a == null
+            ? b
+            : a.Value > b.Value
+                ? a
+                : b;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static DateTime? MinOfDateTime(DateTime? a, DateTime? b)
     {
         if (b is not { } bValue) return a;
-        return a == null ? b : a.Value < bValue ? a : b;
+
+        return a == null
+            ? b
+            : a.Value < b.Value
+                ? a
+                : b;
     }
+
+
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TimeSpan? MaxOfTimeSpan(TimeSpan? a, TimeSpan? b)
     {
         if (b is not { } bValue) return a;
-        return a == null ? b : a.Value > bValue ? a : b;
+
+        return a == null
+            ? b
+            : a.Value > b.Value
+                ? a
+                : b;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TimeSpan? MinOfTimeSpan(TimeSpan? a, TimeSpan? b)
     {
         if (b is not { } bValue) return a;
-        return a == null ? b : a.Value < bValue ? a : b;
+
+        return a == null
+            ? b
+            : a.Value < b.Value
+                ? a
+                : b;
     }
+
+
+
 }
