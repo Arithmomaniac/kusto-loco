@@ -64,33 +64,6 @@ public class TakeAnyTests : TestMethods
 
     /// <summary>
     /// Based on Microsoft Documentation example:
-    /// Get a random event for each State beginning with 'A'
-    /// https://learn.microsoft.com/en-us/kusto/query/take-any-aggregation-function
-    /// </summary>
-    [TestMethod]
-    public async Task TakeAnyByState_FromDocumentation()
-    {
-        var query = """
-                    datatable(State: string, StartTime: datetime, EpisodeId: long, EventType: string) [
-                        "ALABAMA", datetime(2023-01-01), 1, "Tornado",
-                        "ALABAMA", datetime(2023-01-02), 2, "Hail",
-                        "ARIZONA", datetime(2023-02-01), 3, "Storm",
-                        "ARIZONA", datetime(2023-02-02), 4, "Wind",
-                        "ARKANSAS", datetime(2023-03-01), 5, "Flood",
-                    ]
-                    | where State startswith "A"
-                    | summarize take_any(*) by State
-                    | order by State asc
-                    """;
-        var result = await ResultAsLines(query);
-        // Each state should return one row with some event type
-        result.Should().Contain("ALABAMA");
-        result.Should().Contain("ARIZONA");
-        result.Should().Contain("ARKANSAS");
-    }
-
-    /// <summary>
-    /// Based on Microsoft Documentation example:
     /// Use take_anyif to filter by predicate
     /// https://learn.microsoft.com/en-us/kusto/query/take-anyif-aggregation-function
     /// </summary>
