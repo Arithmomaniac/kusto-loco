@@ -19,8 +19,8 @@
     <NoWarn>$(NoWarn);NU5128</NoWarn>
     <!-- Mark as a development dependency since the source generator runs at build time -->
     <DevelopmentDependency>true</DevelopmentDependency>
-    <!-- Get the path to the SourceGeneration output -->
-    <SourceGenerationOutputDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\SourceGeneration\bin\$(Configuration)\netstandard2.0\'))</SourceGenerationOutputDir>
+    <!-- Ensure pack runs after build to guarantee the source generator DLL exists -->
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeSourceGeneratorInPackage</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,12 +32,16 @@
 
   <!-- Reference the source generator project to ensure it's built before packing -->
   <ItemGroup>
-    <ProjectReference Include="..\SourceGeneration\SourceGeneration.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\SourceGeneration\SourceGeneration.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
-  <!-- Include the source generator DLL in the analyzers folder of the NuGet package -->
+  <!-- Include the source generator DLL in the analyzers folder of the NuGet package.
+       Source generators must target netstandard2.0 (required by Roslyn analyzer infrastructure). -->
   <ItemGroup>
-    <None Include="$(SourceGenerationOutputDir)SourceGeneration.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="..\SourceGeneration\bin\$(Configuration)\netstandard2.0\SourceGeneration.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
   </ItemGroup>
+
+  <!-- Empty target to satisfy the TargetsForTfmSpecificBuildOutput requirement -->
+  <Target Name="IncludeSourceGeneratorInPackage" />
 
 </Project>
