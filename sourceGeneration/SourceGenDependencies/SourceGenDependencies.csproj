@@ -4,10 +4,10 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>KustoLoco.SourceGeneration.Attributes</AssemblyName>
     <RootNamespace>KustoLoco.SourceGeneration.Attributes</RootNamespace>
-    <Title>Attributes required for source-generation of custom functions</Title>
+    <Title>Attributes and source generator for custom Kusto functions</Title>
     <Version>1.0.0</Version>
     <Authors>Neil MacMullen</Authors>
-    <Description>Attributes required for source-generation of custom functions</Description>
+    <Description>Attributes and source generator required for source-generation of custom Kusto functions</Description>
     <Copyright>(C) 2024</Copyright>
     <PackageProjectUrl>https://github.com/NeilMacMullen/kusto-loco</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -15,6 +15,10 @@
     <PackageReleaseNotes>https://github.com/NeilMacMullen/kusto-loco/releases</PackageReleaseNotes>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Configurations>Debug;Release;AvaloniaPreviewer;DebugStartup</Configurations>
+    <!-- Suppress dependency warnings for analyzer packages since the generator doesn't need runtime dependencies -->
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+    <!-- Mark as a development dependency since the source generator runs at build time -->
+    <DevelopmentDependency>true</DevelopmentDependency>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,5 +27,25 @@
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
+
+  <!-- Reference the source generator project to ensure it's built before packing.
+       ReferenceOutputAssembly=false means we don't take a compile-time dependency.
+       PrivateAssets=all prevents the reference from flowing to consumers. -->
+  <ItemGroup>
+    <ProjectReference Include="..\SourceGeneration\SourceGeneration.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <!-- Get the output path of the SourceGeneration project and include it in the package.
+       Source generators must target netstandard2.0 (required by Roslyn analyzer infrastructure). -->
+  <Target Name="GetSourceGeneratorOutputPath" BeforeTargets="_GetPackageFiles">
+    <MSBuild Projects="..\SourceGeneration\SourceGeneration.csproj" Targets="GetTargetPath">
+      <Output TaskParameter="TargetOutputs" PropertyName="SourceGeneratorPath" />
+    </MSBuild>
+    <Error Condition="'$(SourceGeneratorPath)' == '' or !Exists('$(SourceGeneratorPath)')" 
+           Text="Source generator DLL not found at '$(SourceGeneratorPath)'. Ensure the SourceGeneration project builds successfully before packing." />
+    <ItemGroup>
+      <_PackageFiles Include="$(SourceGeneratorPath)" PackagePath="analyzers/dotnet/cs" />
+    </ItemGroup>
+  </Target>
 
 </Project>
