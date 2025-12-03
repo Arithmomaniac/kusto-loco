@@ -41,7 +41,7 @@
     <MSBuild Projects="..\SourceGeneration\SourceGeneration.csproj" Targets="GetTargetPath">
       <Output TaskParameter="TargetOutputs" PropertyName="SourceGeneratorPath" />
     </MSBuild>
-    <Error Condition="'$(SourceGeneratorPath)' == '' OR !Exists('$(SourceGeneratorPath)')" 
+    <Error Condition="'$(SourceGeneratorPath)' == '' or !Exists('$(SourceGeneratorPath)')" 
            Text="Source generator DLL not found at '$(SourceGeneratorPath)'. Ensure the SourceGeneration project builds successfully before packing." />
     <ItemGroup>
       <_PackageFiles Include="$(SourceGeneratorPath)" PackagePath="analyzers/dotnet/cs" />
