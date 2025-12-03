@@ -19,8 +19,6 @@
     <NoWarn>$(NoWarn);NU5128</NoWarn>
     <!-- Mark as a development dependency since the source generator runs at build time -->
     <DevelopmentDependency>true</DevelopmentDependency>
-    <!-- Ensure pack runs after build to guarantee the source generator DLL exists -->
-    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeSourceGeneratorInPackage</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,18 +28,22 @@
     </None>
   </ItemGroup>
 
-  <!-- Reference the source generator project to ensure it's built before packing -->
+  <!-- Reference the source generator project to ensure it's built before packing.
+       ReferenceOutputAssembly=false means we don't take a compile-time dependency.
+       PrivateAssets=all prevents the reference from flowing to consumers. -->
   <ItemGroup>
     <ProjectReference Include="..\SourceGeneration\SourceGeneration.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
-  <!-- Include the source generator DLL in the analyzers folder of the NuGet package.
+  <!-- Get the output path of the SourceGeneration project and include it in the package.
        Source generators must target netstandard2.0 (required by Roslyn analyzer infrastructure). -->
-  <ItemGroup>
-    <None Include="..\SourceGeneration\bin\$(Configuration)\netstandard2.0\SourceGeneration.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-  </ItemGroup>
-
-  <!-- Empty target to satisfy the TargetsForTfmSpecificBuildOutput requirement -->
-  <Target Name="IncludeSourceGeneratorInPackage" />
+  <Target Name="GetSourceGeneratorOutputPath" BeforeTargets="_GetPackageFiles">
+    <MSBuild Projects="..\SourceGeneration\SourceGeneration.csproj" Targets="GetTargetPath">
+      <Output TaskParameter="TargetOutputs" PropertyName="SourceGeneratorPath" />
+    </MSBuild>
+    <ItemGroup>
+      <_PackageFiles Include="$(SourceGeneratorPath)" PackagePath="analyzers/dotnet/cs" />
+    </ItemGroup>
+  </Target>
 
 </Project>
