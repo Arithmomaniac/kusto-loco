@@ -4,10 +4,10 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>KustoLoco.SourceGeneration.Attributes</AssemblyName>
     <RootNamespace>KustoLoco.SourceGeneration.Attributes</RootNamespace>
-    <Title>Attributes required for source-generation of custom functions</Title>
+    <Title>Attributes and source generator for custom Kusto functions</Title>
     <Version>1.0.0</Version>
     <Authors>Neil MacMullen</Authors>
-    <Description>Attributes required for source-generation of custom functions</Description>
+    <Description>Attributes and source generator required for source-generation of custom Kusto functions</Description>
     <Copyright>(C) 2024</Copyright>
     <PackageProjectUrl>https://github.com/NeilMacMullen/kusto-loco</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -15,6 +15,10 @@
     <PackageReleaseNotes>https://github.com/NeilMacMullen/kusto-loco/releases</PackageReleaseNotes>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Configurations>Debug;Release;AvaloniaPreviewer;DebugStartup</Configurations>
+    <!-- Suppress dependency warnings for analyzer packages since the generator doesn't need runtime dependencies -->
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+    <!-- Mark as a development dependency since the source generator runs at build time -->
+    <DevelopmentDependency>true</DevelopmentDependency>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +26,16 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+  </ItemGroup>
+
+  <!-- Reference the source generator project but don't include it in the output -->
+  <ItemGroup>
+    <ProjectReference Include="..\SourceGeneration\SourceGeneration.csproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <!-- Include the source generator DLL in the analyzers folder of the NuGet package -->
+  <ItemGroup>
+    <None Include="..\SourceGeneration\bin\$(Configuration)\netstandard2.0\SourceGeneration.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
   </ItemGroup>
 
 </Project>
