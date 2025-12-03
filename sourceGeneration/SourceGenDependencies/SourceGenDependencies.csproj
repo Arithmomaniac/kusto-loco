@@ -19,6 +19,8 @@
     <NoWarn>$(NoWarn);NU5128</NoWarn>
     <!-- Mark as a development dependency since the source generator runs at build time -->
     <DevelopmentDependency>true</DevelopmentDependency>
+    <!-- Get the path to the SourceGeneration output -->
+    <SourceGenerationOutputDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\SourceGeneration\bin\$(Configuration)\netstandard2.0\'))</SourceGenerationOutputDir>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,14 +30,14 @@
     </None>
   </ItemGroup>
 
-  <!-- Reference the source generator project but don't include it in the output -->
+  <!-- Reference the source generator project to ensure it's built before packing -->
   <ItemGroup>
     <ProjectReference Include="..\SourceGeneration\SourceGeneration.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <!-- Include the source generator DLL in the analyzers folder of the NuGet package -->
   <ItemGroup>
-    <None Include="..\SourceGeneration\bin\$(Configuration)\netstandard2.0\SourceGeneration.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(SourceGenerationOutputDir)SourceGeneration.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
   </ItemGroup>
 
 </Project>
